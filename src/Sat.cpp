@@ -34,7 +34,7 @@ Sat::Sat(std::string path,int lines){
   
  
 	std::fstream myfile(path.c_str(), std::ios_base::in);
-
+	if(myfile.is_open()){
     float a;
     int i =0;
     string line;
@@ -54,6 +54,7 @@ Sat::Sat(std::string path,int lines){
 }
 
 	labelsS = dataS.col(dataS.cols()-1);
+} else cerr << "file " << path << " not opened" << endl;
 }
 
 MatrixXd Sat::loadSat(){

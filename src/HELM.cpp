@@ -14,7 +14,6 @@ MatrixXd activateSigmoid(MatrixXd result){
             double x = result(i,j);
             //fast sigmoid
             activation(i,j) = x/(1.0d+(double)abs(x));
-
             //normal one
             //activation(j) = (1 / (1+(exp(-result(j)))));
         }
@@ -72,17 +71,19 @@ HELM::HELM(MatrixXd IN, MatrixXd labelM, MatrixXd INt, MatrixXd OUTl, int L1, in
 		
 	//1 layer
 	IN = stat.zscores(IN);
-	IN.conservativeResize(NoChange, IN.cols()+1);	
+	IN.conservativeResize(NoChange, IN.cols()+1);
+	//add bias	
 	IN.col(IN.cols()-1) = VectorXd::Ones(IN.rows());	
 		
     MatrixXd Ba1 = Henc->extractFeatures(iterations,(IN*b),IN);
     MatrixXd I = activateSigmoid(IN*Ba1.transpose());
-    cout << "I size " << I.rows() << " " << I.cols() << endl;	
+    cout << "First Hidden layer size " << I.rows() << " " << I.cols() << endl;	
     
     
     //2 layer
     b = MatrixXd::Random(L1+1,L2);
     I.conservativeResize(NoChange, I.cols()+1);	
+    //add bias	
 	I.col(I.cols()-1) = VectorXd::Ones(I.rows());
 	
     MatrixXd Ba2 = Henc->extractFeatures(iterations,(I*b),I);
@@ -90,9 +91,10 @@ HELM::HELM(MatrixXd IN, MatrixXd labelM, MatrixXd INt, MatrixXd OUTl, int L1, in
     
            
     //ELM
-    cout << "start train" << endl;
+    cout << "start ELM" << endl;
     MatrixXd HB = MatrixXd::Random(III.cols()+1,L4);
 	III.conservativeResize(NoChange, III.cols()+1);
+	//add bias	
 	III.col(III.cols()-1) = VectorXd::Ones(III.rows());
 	
 
@@ -104,17 +106,20 @@ HELM::HELM(MatrixXd IN, MatrixXd labelM, MatrixXd INt, MatrixXd OUTl, int L1, in
 	//layer 1
 	INt = stat.zscores(INt);
     INt.conservativeResize(NoChange,INt.cols()+1);
+    //add bias	
 	INt.col(INt.cols()-1) = VectorXd::Ones(INt.rows());
     MatrixXd H1 = activateSigmoid(INt*Ba1.transpose());    
     
     
     //layer 2
     H1.conservativeResize(NoChange, H1.cols()+1);	
+    //add bias	
 	H1.col(H1.cols()-1) = VectorXd::Ones(H1.rows());
     MatrixXd H3 = activateSigmoid(H1*Ba2.transpose());
 	
     //ELM
-    H3.conservativeResize(NoChange, H3.cols()+1);	
+    H3.conservativeResize(NoChange, H3.cols()+1);
+    //add bias		
 	H3.col(H3.cols()-1) = VectorXd::Ones(H3.rows());
     MatrixXd H4 = activateSigmoid(H3*HB*l3);
     MatrixXd resultTest = H4*B;    

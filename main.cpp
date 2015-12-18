@@ -16,11 +16,16 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 int randomImage = 5;
 
+
+//puts a vector of labels into a matrix of labels for classification, parameter numOfClasses is used to define the number of labels/classes
 MatrixXd prepareOutputData(VectorXd label,int numOfClasses){
     MatrixXd labelM = MatrixXd::Zero(label.size(),numOfClasses) - MatrixXd::Ones(label.size(),numOfClasses);
 
+
     for(int i = 0 ; i<label.size(); i++){
-        labelM(i,label(i)) = 1;
+		/*for MNIST dataset is
+		labelM(i,label(i)) = 1;*/
+        labelM(i,label(i)-1) = 1;
     }
     
 
@@ -46,22 +51,50 @@ int main(int argc, char** argv){
 		
     Eigen::setNbThreads(4);
 	VectorXd label;
-    for(int k = 0; k< 50 ; k++){
+	
+	int number_of_runs = 50;
+	
+    for(int k = 0; k < number_of_runs ; k++){
 	sleep(1);
     srand(std::time(0));
-    int inputNum = 25000;
-    int L1 = 700;
-    int L2 = 700;
-    int L4 = 5000;
+    int inputNum = 4435;
+    int L1 = 50;
+    int L2 = 50;
+    int L4 = 800;
     vector<vector<double>> arr;
     vector<double> labelArr;
 
+	
+
+
     
-    int imageSize = 784; //width*height
+    int dataSize = 36; //for example width*height for images
+    
+    
+    
 	//prepare training data
 	MatrixXd IN;
+	Sat s("sat/sat.trn",inputNum);
+	IN = s.loadSat();
+	label = s.getLabels();
+	MatrixXd labelM = prepareOutputData(label,7);
+	
+	
+	//test data
+	MatrixXd INt;
+    MatrixXd OUTl;
+	Sat sTest("sat/sat.tst",2000);
+	INt = sTest.loadSat();
+	VectorXd OUTV = sTest.getLabels();
+	OUTl = prepareOutputData(OUTV,7);
+	
+	
+	
+	
+	
+	/*
 	LoadMNIST m;
-	//Sat s("/home/ajeje/HELM_MNIST/sat/sat.trn",4435);
+	
 	m.readMNIST(inputNum,imageSize,arr,"MNIST/train-images.idx3-ubyte");
 	m.readLabel(inputNum,labelArr,"MNIST/train-labels.idx1-ubyte");
 	label = VectorXd(labelArr.size());
@@ -86,10 +119,11 @@ int main(int argc, char** argv){
 		OUTlV(i) = labelArrTest[i];
 	}
 	OUTl = prepareOutputData(OUTlV,10);
+	*/
 	
+	//Constructor of class launches training and testing of the network
 	
-	//Constructir of class launches training and testing of the network
-	HELM h(IN,labelM,INt,OUTl,L1,L2,L4,inputNum,imageSize);
+	HELM h(IN,labelM,INt,OUTl,L1,L2,L4,inputNum,dataSize);
 	
 }
     return 0;
