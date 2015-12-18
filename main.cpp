@@ -27,53 +27,6 @@ MatrixXd prepareOutputData(VectorXd label,int numOfClasses){
     return labelM;
 }
 
-void removeColumn2(Eigen::MatrixXd& matrix, unsigned int colToRemove)
-{
-    unsigned int numRows = matrix.rows();
-    unsigned int numCols = matrix.cols()-1;
-
-    if( colToRemove < numCols )
-        matrix.block(0,colToRemove,numRows,numCols-colToRemove) = matrix.block(0,colToRemove+1,numRows,numCols-colToRemove);
-
-    matrix.conservativeResize(numRows,numCols);
-}
-
-
-
-void saveImg(VectorXd oneImg, bool color,string imgName, int row){
-
-    ofstream myfile;
-    string path = "/home/ajeje/HELM_MNIST/" + imgName;
-    myfile.open(path.c_str());
-    if (color){
-        myfile << "P3" << "\n" << 32 << " " << 32 << "\n255" << endl;
-        for (int i = 0; i < 3072; i++){
-            if(i%96==0){
-                myfile << endl;
-            }
-            /* unsigned char r,g,b;
-            r = oneImg(i);
-            g = oneImg(1024+i);
-            b = oneImg(2048+i);
-            myfile << (int) r << " " << (int) g << " " << (int) b << " ";*/
-            myfile << abs((int) oneImg(i)) << " ";
-        }
-    }
-    else{
-        myfile << "P2" << "\n" << row << " " << row << "\n255" << endl;
-        for (int i = 0; i < oneImg.size(); i++){
-            if(i%row==0){
-                myfile << endl;
-            }
-            unsigned char color;
-            color = oneImg(i);
-            myfile << (int) color << " ";
-
-        }
-    }
-    myfile.close();
-
-}
 
 MatrixXd prepareData(vector<vector<double>> arr){
     long c = 0;
@@ -109,8 +62,8 @@ int main(int argc, char** argv){
 	MatrixXd IN;
 	LoadMNIST m;
 	//Sat s("/home/ajeje/HELM_MNIST/sat/sat.trn",4435);
-	m.readMNIST(inputNum,imageSize,arr,"/home/ajeje/HELM_MNIST/MNIST/train-images.idx3-ubyte");
-	m.readLabel(inputNum,labelArr,"/home/ajeje/HELM_MNIST/MNIST/train-labels.idx1-ubyte");
+	m.readMNIST(inputNum,imageSize,arr,"/MNIST/train-images.idx3-ubyte");
+	m.readLabel(inputNum,labelArr,"/MNIST/train-labels.idx1-ubyte");
 	label = VectorXd(labelArr.size());
 	
 	for(int i = 0; i< labelArr.size(); i++){
@@ -125,9 +78,9 @@ int main(int argc, char** argv){
     MatrixXd INt;
     MatrixXd OUTl;
     LoadMNIST mt;
-    mt.readMNIST(10000,784,arrTest,"/home/ajeje/HELM_MNIST/MNIST/t10k-images.idx3-ubyte");
+    mt.readMNIST(10000,784,arrTest,"/MNIST/t10k-images.idx3-ubyte");
     INt = prepareData(arrTest);		
-	m.readLabel(10000,labelArrTest,"/home/ajeje/HELM_MNIST/MNIST/t10k-labels.idx1-ubyte");
+	m.readLabel(10000,labelArrTest,"/MNIST/t10k-labels.idx1-ubyte");
 	VectorXd OUTlV = VectorXd(labelArrTest.size());
 	for(int i = 0; i< labelArrTest.size(); i++){
 		OUTlV(i) = labelArrTest[i];

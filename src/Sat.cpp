@@ -16,6 +16,7 @@ void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
     matrix.conservativeResize(numRows,numCols);
 }
 
+
 void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
 {
     unsigned int numRows = matrix.rows();
