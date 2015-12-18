@@ -35,7 +35,7 @@ void LoadMNIST::readLabel(long numberoflabels, vector<double> &l, string path){
             l[i] = (double)temp;
         }
 
-    }
+    } else cerr << "file " << path << " not found/not opened" << endl;
 }
 
 
@@ -72,9 +72,7 @@ void LoadMNIST::readMNIST(long NumberOfImages, int DataOfAnImage, vector<vector<
             }
            
         }
-    }
-
-    // return arr;
+    } else cerr << "file " << path << " not found/not opened" << endl;
 
 }
 

@@ -62,8 +62,8 @@ int main(int argc, char** argv){
 	MatrixXd IN;
 	LoadMNIST m;
 	//Sat s("/home/ajeje/HELM_MNIST/sat/sat.trn",4435);
-	m.readMNIST(inputNum,imageSize,arr,"/MNIST/train-images.idx3-ubyte");
-	m.readLabel(inputNum,labelArr,"/MNIST/train-labels.idx1-ubyte");
+	m.readMNIST(inputNum,imageSize,arr,"MNIST/train-images.idx3-ubyte");
+	m.readLabel(inputNum,labelArr,"MNIST/train-labels.idx1-ubyte");
 	label = VectorXd(labelArr.size());
 	
 	for(int i = 0; i< labelArr.size(); i++){
@@ -78,9 +78,9 @@ int main(int argc, char** argv){
     MatrixXd INt;
     MatrixXd OUTl;
     LoadMNIST mt;
-    mt.readMNIST(10000,784,arrTest,"/MNIST/t10k-images.idx3-ubyte");
+    mt.readMNIST(10000,784,arrTest,"MNIST/t10k-images.idx3-ubyte");
     INt = prepareData(arrTest);		
-	m.readLabel(10000,labelArrTest,"/MNIST/t10k-labels.idx1-ubyte");
+	m.readLabel(10000,labelArrTest,"MNIST/t10k-labels.idx1-ubyte");
 	VectorXd OUTlV = VectorXd(labelArrTest.size());
 	for(int i = 0; i< labelArrTest.size(); i++){
 		OUTlV(i) = labelArrTest[i];
